@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
 
 const Header = () => {
   return <h1>Phonebook</h1>
@@ -41,16 +42,18 @@ const Person = ({ person }) => {
 
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    {name: 'Arto Hellas', number: '845-672-1232', id: 1},
-    {name: 'John Smith', number: '201-372-6696', id: 2},
-    {name: 'Bjarne Stroustrup', number: '201-986-1731', id: 3},
-    {name: 'Brian Kernighan', number: '845-568-9012', id: 4},
-    {name: 'James Gosling', number: '672-332-5156', id: 5}
-  ])
+  const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [searchName, setSearchName] = useState('')
+
+  useEffect(() => {
+    axios
+      .get('http://localhost:3001/persons')
+      .then(response => {
+        setPersons(response.data)
+      })
+  }, [])
 
   const addPerson = (event) => {
     event.preventDefault()
@@ -70,7 +73,6 @@ const App = () => {
       setNewNumber('')
     }
   }
-
 
   const handleNameChange = (event) => {
     setNewName(event.target.value)
